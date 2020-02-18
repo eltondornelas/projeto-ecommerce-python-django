@@ -12,6 +12,8 @@ build/
 develop-eggs/
 dist/
 downloads/
+.idea/
+.vscode/
 eggs/
 .eggs/
 lib/
