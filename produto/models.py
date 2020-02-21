@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from utils import utils
 
 
+
 class Produto(models.Model):
     nome = models.CharField(max_length=255)
     descricao_curta = models.TextField(max_length=255)  # é apenas descrição na página inicial, 255 é até grande
@@ -82,6 +83,7 @@ class Produto(models.Model):
     # Mostra o nome real em admin
     def __str__(self):
         return self.nome
+
 
 
 class Variacao(models.Model):
