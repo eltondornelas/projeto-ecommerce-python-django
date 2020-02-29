@@ -103,6 +103,7 @@ class AdicionarAoCarrinho(View):
             # adicionando uma nova variação que ainda não existe no carrinho
             carrinho[variacao_id] = {
                 'produto_id': produto_id,
+                'produto_nome': produto_nome,
                 'variacao_nome': variacao_nome,
                 'variacao_id': variacao_id,
                 'preco_unitario': preco_unitario,
@@ -128,12 +129,41 @@ class AdicionarAoCarrinho(View):
 
 class RemoverDoCarrinho(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Remover carrinho')
+
+        http_referer = self.request.META.get('HTTP_REFERER', reverse('produto:lista'))
+        variacao_id = self.request.GET.get('vid')
+
+        if not variacao_id:
+            # caso não exista variação apenas retorna para pag anterior sem aviso mesmo
+            return redirect(http_referer)
+
+        if not self.request.session.get('carrinho'):
+            return redirect(http_referer)
+
+        if variacao_id not in self.request.session['carrinho']:
+            # variacao nao existe no carrinho
+            return redirect(http_referer)
+
+        carrinho = self.request.session['carrinho'][variacao_id]
+
+        messages.success(
+            self.request,
+            f'Produto {carrinho["produto_nome"]} {carrinho["variacao_nome"]} removido do seu carrinho.'
+        )
+
+        del self.request.session['carrinho'][variacao_id]
+        self.request.session.save()
+
+        return redirect(http_referer)
 
 
 class Carrinho(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'produto/carrinho.html')
+        contexto = {
+            'carrinho': self.request.session.get('carrinho', {})
+        }
+
+        return render(self.request, 'produto/carrinho.html', contexto)
 
 
 class Finalizar(View):
