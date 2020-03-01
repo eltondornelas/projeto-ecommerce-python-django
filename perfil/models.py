@@ -61,6 +61,18 @@ class Perfil(models.Model):
     def clean(self):  # validando campos
         error_messages = {}
 
+        cpf_enviado = self.cpf or None
+        cpf_salvo = None
+        perfil = Perfil.objects.filter(cpf=cpf_enviado).first()
+
+        if perfil:
+            cpf_salvo = perfil.cpf  # o que esta salvo no banco de dados
+
+            if cpf_salvo is not None and self.pk != perfil.pk:
+                # caso obtenho um cpf da base de dados, ou seja, não é None
+                # se os pks forem iguais, significa que o cliente está atualizando o cpf
+                error_messages['cpf'] = 'CPF já existe.'
+
         # dessa forma consegue levantar excecao para cada campo específico
         if not valida_cpf(self.cpf):
             error_messages['cpf'] = 'Digite um CPF válido'
