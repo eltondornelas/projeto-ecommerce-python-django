@@ -6,6 +6,7 @@ class Pedido(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     # Pedido é um "filho" de usuário, pois ele é quem tem os pedidos
     total = models.FloatField()
+    qtd_total = models.PositiveIntegerField()
     status = models.CharField(
         default='C',
         max_length=1,  # apenas 1 letra
