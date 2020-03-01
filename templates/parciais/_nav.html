@@ -1,7 +1,7 @@
 {% load omfilters %}
 
 <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
-    <a class="navbar-brand" href="{% url 'produto:lista' %}"">E-commerce</a>
+    <a class="navbar-brand" href="{% url 'produto:lista' %}">E-commerce</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -23,7 +23,8 @@
                         Conta
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'perfil:criar' %}">Atualizar</a>
+                        <a class="dropdown-item" href="{% url 'pedido:lista' %}">Meus pedidos</a>
+                        <a class="dropdown-item" href="{% url 'perfil:criar' %}">Atualizar meus dados</a>
                         <a class="dropdown-item" href="{% url 'perfil:logout' %}">Sair</a>
                     </div>
                 </li>
