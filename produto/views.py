@@ -29,12 +29,6 @@ class AdicionarAoCarrinho(View):
     # quando usar o class based View, vai precisar escrever os métodos Get e Post, caso necessário
     # essa classe não renderiza, apenas redireciona
     def get(self, *args, **kwargs):
-        # TODO: remover abaixo
-        # if self.request.session.get('carrinho'):
-        #     del self.request.session['carrinho']
-        #     self.request.session.save()
-        # foi apenas para apagar a sessao
-
         http_referer = self.request.META.get('HTTP_REFERER', reverse('produto:lista'))
 
         variacao_id = self.request.GET.get('vid')
@@ -118,7 +112,7 @@ class AdicionarAoCarrinho(View):
             # incluindo um produto no carrinho
 
         self.request.session.save()
-        pprint(carrinho)  # o pprint formata no console a impressão de um json/dict
+        # pprint(carrinho)  # o pprint formata no console a impressão de um json/dict
 
         messages.success(
             self.request,
