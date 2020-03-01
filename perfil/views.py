@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
 from django.views import View
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 import copy
 
 from . import models
@@ -107,7 +108,19 @@ class Criar(BasePerfil):
 
         self.request.session['carrinho'] = self.carrinho
         self.request.session.save()
-        return self.renderizar
+
+        messages.success(
+            self.request,
+            'Seu cadastro foi criado ou atualizado com sucesso.'
+        )
+
+        messages.success(
+            self.request,
+            'Você fez login e pode concluir sua compra.'
+        )
+
+        return redirect('perfil:criar')
+        # return self.renderizar  # o renderizar acaba tendo que ficar reenviando o formulario quando atualiza a pagina
 
 
 class Atualizar(View):
@@ -116,10 +129,44 @@ class Atualizar(View):
 
 
 class Login(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Login')
+    def post(self, *args, **kwargs):
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
+
+        if not username or not password:
+            messages.error(
+                self.request,
+                'Usuário ou senha inválidos.'
+            )
+            return redirect('perfil:criar')
+
+        usuario = authenticate(self.request, username=username, password=password)
+
+        if not usuario:
+            messages.error(
+                self.request,
+                'Usuário ou senha inválidos.'
+            )
+            return redirect('perfil:criar')
+
+        login(self.request, user=usuario)
+
+        messages.success(
+            self.request,
+            'Login feito com sucesso.'
+        )
+
+        return redirect('produto:carrinho')
 
 
 class Logout(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Logout')
+        carrinho = copy.deepcopy(self.request.session.get('carrinho'))
+        # melhorar depois para confirmar se tem produto no carrinho para então fazer isso
+
+        logout(self.request)
+
+        self.request.session['carrinho'] = carrinho  # para não perder o carrinho no logout
+        self.request.session.save()
+
+        return redirect('produto:lista')
