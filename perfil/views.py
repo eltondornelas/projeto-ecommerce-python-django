@@ -54,6 +54,10 @@ class Criar(BasePerfil):
         # print(self.perfil)
         if not self.userform.is_valid() or not self.perfilform.is_valid():
             # print('INVALIDO')
+            messages.error(
+                self.request,
+                'Existem erros no preenchimento do formulário.'
+            )
             return self.renderizar
 
         username = self.userform.cleaned_data.get('username')
@@ -119,7 +123,7 @@ class Criar(BasePerfil):
             'Você fez login e pode concluir sua compra.'
         )
 
-        return redirect('perfil:criar')
+        return redirect('produto:carrinho')
         # return self.renderizar  # o renderizar acaba tendo que ficar reenviando o formulario quando atualiza a pagina
 
 
